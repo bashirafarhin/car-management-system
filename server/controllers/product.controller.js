@@ -1,6 +1,7 @@
 import ProductModel from "../database/models/product.model.js";
 import mongoose from "mongoose";
 import { validationResult } from "express-validator";
+import { uploadImageToCloudinary } from "../utils/cloudinary.js";
 import env from "dotenv";
 env.config();
 
@@ -27,27 +28,34 @@ export const createProduct = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array()[0].msg });
   }
+
   try {
-    const { title, description, images, tags, carType, company, dealer } =
-      req.body;
+    const uploadedImages = [];
+    if (req.files.length > 0) {
+      for (const file of req.files) {
+        const imageUrl = await uploadImageToCloudinary(file.path);
+        uploadedImages.push(imageUrl);
+      }
+    }
+    const { title, description, carType, company, dealer } = req.body;
     const userId = req.user._id;
     const newProduct = new ProductModel({
       title,
       description,
-      images,
-      tags,
+      images: uploadedImages,
       carType,
       company,
       dealer,
-      userId: userId,
+      userId,
     });
     await newProduct.save();
-    res
-      .status(201)
-      .json({ message: "Product created successfully", product: newProduct });
+    res.status(201).json({
+      message: "Product created successfully",
+      product: newProduct,
+    });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -56,22 +64,36 @@ export const updateProduct = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array()[0].msg });
   }
+
   try {
     const { id } = req.params;
     const updates = req.body;
     const userId = req.user._id;
     const mongoProductId = new mongoose.Types.ObjectId(id);
+
     const product = await ProductModel.findOne({ _id: mongoProductId, userId });
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
+
+    // If new images are uploaded, process them
+    if (req.files.length > 0) {
+      const uploadedImages = [];
+      for (const file of req.files) {
+        const imageUrl = await uploadImageToCloudinary(file.path);
+        uploadedImages.push(imageUrl);
+      }
+      updates.images = uploadedImages; // Replace old images with new ones
+    }
+
+    // Update product fields
     Object.assign(product, updates);
     await product.save();
+
     res.status(200).json({ message: "Product updated successfully", product });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: err.message });
   }
 };
 

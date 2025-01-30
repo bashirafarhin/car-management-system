@@ -30,9 +30,9 @@ app.use(express.json());
 app.use("/auth", authRouter);
 app.use("/product", productRouter);
 
-app.get('/',(req,res)=>{
-  res.send('Hello Developer!')
-})
+app.get("/", (req, res) => {
+  res.send("Hello Developer!");
+});
 
 // Server setup
 app.listen(port, () => {

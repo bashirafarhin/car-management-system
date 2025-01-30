@@ -12,6 +12,8 @@ const ProductList = lazy(() => import("./components/ProductList"));
 const ProductForm = lazy(() => import("./components/ProductForm"));
 const ProductDetail = lazy(() => import("./components/ProductDetail"));
 const ProductUpdate = lazy(() => import("./components/ProductUpdate"));
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function App() {
   return (

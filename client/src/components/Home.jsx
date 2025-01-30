@@ -1,15 +1,29 @@
-import { useNavigate } from 'react-router-dom'
-import { Button } from '@mui/material'
+import React from "react";
+import { Box, Button, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <>
-    <div>Here Admin Dashboard Will Come</div>
-    <Button variant="contained" onClick={()=>{navigate('products')}}>Browse Your products</Button>
-    </>
-  )
-}
+    <Box sx={{
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    }}>
+      <Typography variant="h6" color="textSecondary">
+        Here Admin Dashboard Will Come
+      </Typography>
+      <Button
+        sx={{ mt: 2 }}
+        variant="contained"
+        onClick={() => navigate("products")}
+      >
+        Browse Your Products
+      </Button>
+    </Box>
+  );
+};
 
-export default Home
+export default Home;

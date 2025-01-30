@@ -7,8 +7,7 @@ env.config();
 export const registerUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    //return error one by one until error array is empty that is no error
-    return res.status(400).json({ message: errors.array()[0].msg });
+    return res.status(400).json({ message: errors.array()[0].msg }); // return error one by one until error array is empty that is no error
   }
   const { username, email, password } = req.body;
   try {
