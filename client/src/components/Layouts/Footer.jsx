@@ -9,11 +9,9 @@ const Footer = () => {
         width: "100%",
         py: 2,
         textAlign: "center",
-        bgcolor: "primary.main", // MUI primary color
+        bgcolor: "primary.main",
         color: "white",
-        mt: "auto", // Pushes footer to the bottom
-        // position: 'absolute',
-        // bottom: 0,
+        mt: "auto",
       }}
     >
       <Typography variant="body2">

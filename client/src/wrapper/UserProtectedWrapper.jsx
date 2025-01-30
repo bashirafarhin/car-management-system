@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
-import Loader from "../components/Loader/Loader";
+import Loader from "../components/utils/Loader";
 
 const UserProtectedWrapper = ({ children }) => {
   const navigate = useNavigate();

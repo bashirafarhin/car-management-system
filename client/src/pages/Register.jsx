@@ -2,41 +2,42 @@ import React, { useContext, useState } from "react";
 import { TextField, Button, Box, Typography, Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import CustomAlert from "../components/utils/CustomAlert";
 import axios from "axios";
 
 const Register = () => {
+  const [alert, setAlert] = useState({ open: false, color: "", msg: "" });
+  const { setUserDetails } = useContext(UserContext);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
 
-  const { setUserDetails } = useContext(UserContext);
-  const navigate = useNavigate();
-
-  // Handle Input Change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/register`, formData, {
         headers: { "Content-Type": "application/json" },
       });
-
-      console.log(res.data);
       localStorage.setItem("authToken", res.data.token);
       setUserDetails({ username: res.data.username, email: res.data.email });
       navigate("/home");
     } catch (err) {
-      console.log("register error:", err);
+      setAlert({ open: true, color: "error", msg: err.response.data.message});
+      setTimeout(() => {
+        setAlert({ open: false, color: "", msg: "" });
+      }, 3000);
     }
   };
 
   return (
+    <>
     <Box
       sx={{
         maxWidth: 400,
@@ -92,6 +93,8 @@ const Register = () => {
         </Link>
       </Box>
     </Box>
+    {alert.open && <CustomAlert color={alert.color} msg={alert.msg} />}
+    </>
   );
 };
 

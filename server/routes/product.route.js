@@ -31,7 +31,7 @@ productRouter.post('/create',[
     body("dealer").notEmpty().withMessage("Dealer name is required"),
   ], authMiddleware, createProduct);
 
-productRouter.put('/:id/update',[
+productRouter.put('/update/:id',[
   param("id").isMongoId().withMessage("Invalid Product ID"),
   body("title").optional().isString().isLength({ min: 3 }).withMessage("Title must be at least 3 characters long"),
   body("description").optional().isString().isLength({ min: 10 }).withMessage("Description must be at least 10 characters long"),

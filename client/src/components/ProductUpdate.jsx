@@ -1,30 +1,35 @@
 import React, { useContext, useState } from "react";
 import { TextField, Button, MenuItem, Box, Typography } from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import CustomAlert from './utils/CustomAlert'
 import { ProductContext } from "../context/ProductContext";
-import { useNavigate } from "react-router-dom";
-import CustomAlert from "./utils/CustomAlert";
+
 const carTypes = ["Sedan", "SUV", "Hatchback", "Convertible", "Coupe", "Truck", "Van"];
 
-const ProductForm = () => {
-  const { setProducts } = useContext(ProductContext);
+const ProductUpdate = () => {
+  const { id } = useParams();
+  const { products, setProducts, productError } = useContext(ProductContext);
+  const [product, setProduct] = useState(products.find((product) => product._id === id));
   const [alert, setAlert] = useState({ open: false, color: "", msg: "" });
-  
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
+    title: product?.title,
+    description: product?.description,
     images: [],
-    carType: "",
-    company: "",
-    dealer: "",
+    carType: product?.carType,
+    company: product?.company,
+    dealer: product?.dealer,
   });
 
-  const [errors, setErrors] = useState({});
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle images input (comma-separated URLs)
   const handleImagesChange = (e) => {
     const imagesArray = e.target.value.split(",").map((url) => url.trim());
     setFormData({ ...formData, images: imagesArray });
@@ -35,28 +40,32 @@ const ProductForm = () => {
     e.preventDefault();
     setErrors({});
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/product/create`, formData, {
+      const res = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/product/update/${id}`, formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
-      setAlert({ open: true, color: "success", msg: "Product Added successfully!" });
-     setTimeout(() => {
+      setAlert({ open: true, color: "success", msg: "Product updated successfully!"});
+      setTimeout(() => {
       setAlert({ open: false, color: "", msg: "" });
       setProducts((prev) => {
-        return [ ...prev, response.data.product]
-      })
-      navigate(`/home/products`);
+        return prev.map((product) =>
+          product._id === res.data.product._id ? res.data.product : product
+        );
+      });
+      navigate(`/home/products/${id}`);
     }, 2000);
     } catch (error) {
-      console.error("Error adding note:", error, error.response.data);
-      setErrors(error.response.data.errors || {});
+      console.error("Update error:", error);
+      setErrors(error.response?.data?.errors || { submit: "Failed to update product" });
     }
   };
+
+  if (errors.fetch) return <p className="text-red-500">{errors.fetch}</p>;
 
   return (
     <>
     <Box className="product-form" sx={{ maxWidth: 500, mx: "auto", mt: 5, p: 3, boxShadow: 3, borderRadius: 2 }}>
       <Typography variant="h4" gutterBottom>
-        Create a New Product
+        Update Product
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
@@ -139,8 +148,10 @@ const ProductForm = () => {
           sx={{ mb: 3 }}
         />
 
+        {errors.submit && <Typography color="error">{errors.submit}</Typography>}
+
         <Button type="submit" variant="contained" color="primary" fullWidth>
-          Create Product
+          Update Product
         </Button>
       </form>
     </Box>
@@ -149,4 +160,4 @@ const ProductForm = () => {
   );
 };
 
-export default ProductForm;
+export default ProductUpdate;
