@@ -6,7 +6,7 @@ env.config();
 
 export const authMiddleware = async(req, res, next) => {
     const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
-    if(!token){
+    if(!token || token === "null" || token === "undefined"){
         return res.status(400).json({ message : "Unauthorized"});
     }
     const isBlacklisted = await BlacklistTokenModel.findOne({ token });
@@ -19,6 +19,6 @@ export const authMiddleware = async(req, res, next) => {
         req.user = user;
         next();
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong." });
+        return res.status(500).json({ message: err.message });
     }
 }

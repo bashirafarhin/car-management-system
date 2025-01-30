@@ -5,7 +5,6 @@ const productSchema = new mongoose.Schema(
         type: String,
         required: [true, "Title is required"],
         trim: true,
-        minlength: [3, "Title must be at least 3 characters long"],
       },
       description: {
         type: String,
@@ -61,8 +60,8 @@ productSchema.statics.searchProducts = async function (input, userId) {
       $or: searchConditions, // Search across all the specified fields
     });
     return products;
-  } catch (error) {
-    throw new Error('Error fetching products: ' + error.message);
+  } catch (err) {
+    throw new Error('Error fetching products: ' + err.message);
   }
 };
 

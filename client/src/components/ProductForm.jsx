@@ -20,7 +20,6 @@ const ProductForm = () => {
     dealer: "",
   });
 
-  const [errors, setErrors] = useState({});
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -33,7 +32,6 @@ const ProductForm = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({});
     try {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/product/create`, formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
@@ -46,9 +44,12 @@ const ProductForm = () => {
       })
       navigate(`/home/products`);
     }, 2000);
-    } catch (error) {
-      console.error("Error adding note:", error, error.response.data);
-      setErrors(error.response.data.errors || {});
+    } catch (err) {
+      console.error("Error adding note:", err);
+      setAlert({ open: true, color: "error", msg: err.response.data.message});
+      setTimeout(() => {
+        setAlert({ open: false, color: "", msg: "" });
+      }, 3000);
     }
   };
 
@@ -65,8 +66,6 @@ const ProductForm = () => {
           name="title"
           value={formData.title}
           onChange={handleChange}
-          error={!!errors.title}
-          helperText={errors.title || ""}
           required
           sx={{ mb: 2 }}
         />
@@ -79,8 +78,6 @@ const ProductForm = () => {
           name="description"
           value={formData.description}
           onChange={handleChange}
-          error={!!errors.description}
-          helperText={errors.description || ""}
           required
           sx={{ mb: 2 }}
         />
@@ -91,8 +88,6 @@ const ProductForm = () => {
           name="images"
           value={formData.images.join(", ")}
           onChange={handleImagesChange}
-          error={!!errors.images}
-          helperText={errors.images || "Enter image URLs separated by commas"}
           sx={{ mb: 2 }}
         />
 
@@ -103,8 +98,6 @@ const ProductForm = () => {
           name="carType"
           value={formData.carType}
           onChange={handleChange}
-          error={!!errors.carType}
-          helperText={errors.carType || ""}
           required
           sx={{ mb: 2 }}
         >
@@ -121,8 +114,6 @@ const ProductForm = () => {
           name="company"
           value={formData.company}
           onChange={handleChange}
-          error={!!errors.company}
-          helperText={errors.company || ""}
           required
           sx={{ mb: 2 }}
         />
@@ -133,8 +124,6 @@ const ProductForm = () => {
           name="dealer"
           value={formData.dealer}
           onChange={handleChange}
-          error={!!errors.dealer}
-          helperText={errors.dealer || ""}
           required
           sx={{ mb: 3 }}
         />

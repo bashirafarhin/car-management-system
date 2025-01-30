@@ -26,9 +26,12 @@ const ProductDetail = () => {
       setProducts(updatedProducts);
       navigate("/home/products");
     }, 2000);
-
     } catch (err) {
-      console.log("error deleting",err);
+      console.log("err during deletion",err);
+      setAlert({ open: true, color: "error", msg: err.response.data.message});
+      setTimeout(() => {
+        setAlert({ open: false, color: "", msg: "" });
+      }, 3000);
     }
   };
 

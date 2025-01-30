@@ -6,7 +6,7 @@ const Home = () => {
 
   return (
     <>
-    <div>Seller-Dashboard-Home</div>
+    <div>Here Admin Dashboard Will Come</div>
     <Button variant="contained" onClick={()=>{navigate('products')}}>Browse Your products</Button>
     </>
   )

@@ -15,10 +15,10 @@ export const getAllProducts = async (req, res) => {
     res
       .status(200)
       .json({ message: "Products retrieved successfully", products });
-  } catch (error) {
+  } catch (err) {
     res
       .status(500)
-      .json({ message: "Something went wrong", error: error.message });
+      .json({ message: err.message });
   }
 };
 
@@ -47,7 +47,7 @@ export const createProduct = async (req, res) => {
       .json({ message: "Product created successfully", product: newProduct });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ message: "Something went wrong." });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -68,10 +68,10 @@ export const updateProduct = async (req, res) => {
     Object.assign(product, updates);
     await product.save();
     res.status(200).json({ message: "Product updated successfully", product });
-  } catch (error) {
+  } catch (err) {
     res
       .status(500)
-      .json({ message: "Something went wrong", error: error.message });
+      .json({ message: err.message });
   }
 };
 
@@ -87,10 +87,10 @@ export const getSuggestedProducts = async (req, res) => {
     res
       .status(200)
       .json({ message: "Products retrieved successfully", products });
-  } catch (error) {
+  } catch (err) {
     res
       .status(500)
-      .json({ message: "Something went wrong", error: error.message });
+      .json({ message: err.message });
   }
 };
 
@@ -105,9 +105,9 @@ export const deleteProduct = async (req, res) => {
         .json({ message: "Product not found" });
     }
     res.status(200).json({ message: "Product deleted successfully"});
-  } catch (error) {
+  } catch (err) {
     res
       .status(500)
-      .json({ message: "Something went wrong", error: error.message });
+      .json({ message: err.message });
   }
 };

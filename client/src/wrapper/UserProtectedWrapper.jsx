@@ -27,12 +27,11 @@ const UserProtectedWrapper = ({ children }) => {
             username: response.data.username,
             email : response.data.email,
           });
-          // console.log(response.data);
         } else {
           navigate("/");
         }
       } catch (error) {
-        console.log(error);
+        console.log("error fetching profile");
         navigate("/");
       } finally {
         setLoading(false);

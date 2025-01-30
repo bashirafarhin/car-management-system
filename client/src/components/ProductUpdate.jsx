@@ -9,8 +9,8 @@ const carTypes = ["Sedan", "SUV", "Hatchback", "Convertible", "Coupe", "Truck", 
 
 const ProductUpdate = () => {
   const { id } = useParams();
-  const { products, setProducts, productError } = useContext(ProductContext);
-  const [product, setProduct] = useState(products.find((product) => product._id === id));
+  const { products, setProducts } = useContext(ProductContext);
+  const product = products.find((product) => product._id === id);
   const [alert, setAlert] = useState({ open: false, color: "", msg: "" });
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -24,18 +24,15 @@ const ProductUpdate = () => {
     dealer: product?.dealer,
   });
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle images input (comma-separated URLs)
   const handleImagesChange = (e) => {
     const imagesArray = e.target.value.split(",").map((url) => url.trim());
     setFormData({ ...formData, images: imagesArray });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});

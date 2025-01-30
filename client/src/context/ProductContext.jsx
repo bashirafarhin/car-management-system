@@ -19,7 +19,7 @@ export const ProductContextProvider = ({children}) => {
             console.log('product context success');
             setProducts(response.data.products);
           } catch (err) {
-            console.log('prod context error')
+            console.log('prod context error',err);
             setProductError(err.message);
           } finally {
             setLoading(false);

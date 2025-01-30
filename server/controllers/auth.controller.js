@@ -26,7 +26,7 @@ export const registerUser = async (req, res) => {
     user.password = undefined;
     return res.status(201).json({ token, user });
   } catch (err) {
-    return res.status(500).json({ message: "Something went wrong." });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -50,7 +50,7 @@ export const loginUser = async (req, res) => {
     user.password = undefined;
     res.status(200).json({ token, user });
   } catch (err) {
-    return res.status(500).json({ message: "Something went wrong." });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -61,8 +61,7 @@ export const logoutUser = async (req, res) => {
     await BlacklistTokenModel.create({ token });
     return res.status(200).json({ message: "Logged Out Successfully" });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Something went wrong." });
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -73,7 +72,7 @@ export const deleteUserAccount = async (req, res) => {
     await UserModel.findByIdAndDelete({ _id: req.user._id });
     return res.status(200).json({ message: "Account Deleted Successfully" });
   } catch (err) {
-    return res.status(500).json({ message: "Something went wrong." });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -81,7 +80,6 @@ export const getUserProfile = async (req, res) => {
   try {
     return res.status(200).json({ email : req.user.email, username : req.user.username });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Something went wrong." });
+    res.status(500).json({ message: err.message });
   }
 };
